@@ -5,7 +5,7 @@
 ## This program is free software.  You may redistribute and/or modify it
 ## under the same terms as Perl itself.
 ##==============================================================================
-## $Id: Task.pm,v 1.0 2002/03/18 02:29:07 kevin Exp $
+## $Id: Task.pm,v 1.1 2002/10/24 01:12:14 kevin Exp $
 ##==============================================================================
 require 5.005_62;
 
@@ -16,7 +16,7 @@ use Tie::StrictHash;
 use Carp;
 use Exporter ();
 use vars qw($VERSION @ISA @EXPORT);
-($VERSION) = q$Revision: 1.0 $ =~ /^Revision:\s+(\S+)/ or $VERSION = "0.0";
+($VERSION) = q$Revision: 1.1 $ =~ /^Revision:\s+(\S+)/ or $VERSION = "0.0";
 @ISA = qw(Exporter);
 @EXPORT = qw(TASK TASKPARM TASKQUEUE);
 
@@ -169,7 +169,7 @@ execute when all tasks in front of them have executed.
 
 =over 4
 
-=item C<< I<$task> = I<$mw>->Task(I<@specifications>); >>
+=item I<$task> = I<$mw>->Task(I<@specifications>);
 
 Creates a new task with the given steps.  This method is actually added to the
 MainWindow class.
@@ -181,7 +181,7 @@ package Tk::Task;
 ##==============================================================================
 ## new
 ##==============================================================================
-sub MainWindow::Task {
+sub Tk::Widget::Task {
 	my $mw = shift;
 
 	my $task = new Tie::StrictHash items => [], main => $mw;
@@ -193,7 +193,7 @@ sub MainWindow::Task {
 
 =pod
 
-=item C<< I<$instance> = I<$task>->start(I<parm1> => I<$value1>, ...); >>
+=item I<$instance> = I<$task>->start(I<parm1> => I<$value1>, ...);
 
 Starts I<$task> executing from the beginning.  The given parameters are made
 available to the steps of the task by use of the TASKPARM pseudo-argument.  Any
@@ -213,7 +213,7 @@ sub start {
 
 =pod
 
-=item C<< I<$instance> = I<$task>->queue(I<$queue>, I<parm1> => I<$value1>, ...); >>
+=item I<$instance> = I<$task>->queue(I<$queue>, I<parm1> => I<$value1>, ...);
 
 Same as B<start>, but also sets the queue that the instance is on.  This is
 meant to be called only by the Tk::Task::Queue methods.
@@ -301,7 +301,7 @@ with one another.
 
 =over 4
 
-=item C<< I<$instance>->repeat; >>
+=item I<$instance>->repeat;
 
 Prevents the instance from advancing to the next step; when the task is due to
 run again, it will repeat the current step.
@@ -321,7 +321,7 @@ sub repeat {
 
 =pod
 
-=item C<< I<$instance>->break; >>
+=item I<$instance>->break;
 
 Causes the instance to exit from the innermost loop; the next step executed will
 be the one after the end of the loop.  If the current step is not part of a
@@ -343,7 +343,7 @@ sub break {
 
 =pod
 
-=item C<< I<$instance>->cancel; >>
+=item I<$instance>->cancel;
 
 Causes the instance to stop after the end of the current step.  No further steps
 will be executed.  If called from "outside" the task, between steps, then the
@@ -362,7 +362,7 @@ sub cancel {
 
 =pod
 
-=item C<< I<$instance>->delay(I<$milliseconds>); >>
+=item I<$instance>->delay(I<$milliseconds>);
 
 Causes a delay of I<$milliseconds> between the time the current step finishes
 and the next step begins.  Behavior if called from other than within a task step
@@ -381,12 +381,12 @@ sub delay {
 
 =pod
 
-=item C<< I<$value> = I<$instance>->parameter(I<parm_name>); >>
+=item I<$value> = I<$instance>->parameter(I<parm_name>);
 
 Returns the value of the particular parameter set when the instance was started,
 or changed later.
 
-=item C<< I<$instance>->parameter(I<parm_name> => I<$value>); >>
+=item I<$instance>->parameter(I<parm_name> => I<$value>);
 
 Sets the value of the named parameter.  This can be either a change to an
 existing parameter or the creation of a new parameter.
@@ -536,7 +536,7 @@ sub _push {
 
 =over 4
 
-=item C<< I<$queue> = new Tk::Task::Queue I<%options>; >>
+=item I<$queue> = new Tk::Task::Queue I<%options>;
 
 Creates a new queue.  The following I<options> are supported:
 
@@ -589,7 +589,7 @@ sub new {
 
 =pod
 
-=item C<< I<$queue>->queue(I<$task>, I<parm1> => I<$value1>, ...); >>
+=item I<$queue>->queue(I<$task>, I<parm1> => I<$value1>, ...);
 
 Adds I<$task> to the end of I<$queue>, with the given parameters.  I<$task>
 will execute when all tasks in front of it have completed; if there are no
@@ -609,7 +609,7 @@ sub queue {
 
 =pod
 
-=item C<< I<$queue>->pause; >>
+=item I<$queue>->pause;
 
 Pauses execution of the queue after the current task is complete.  The next
 task will not begin until the B<resume> method is called.
@@ -627,7 +627,7 @@ sub pause {
 
 =pod
 
-=item C<< I<$queue>->resume; >>
+=item I<$queue>->resume;
 
 Resumes execution of the queue.  Nothing happens if the queue isn't paused.
 
@@ -647,7 +647,7 @@ sub resume {
 
 =pod
 
-=item C<< I<$queue>->cancel; >>
+=item I<$queue>->cancel;
 
 Cancels execution of all tasks in the queue after the current one completes.
 
@@ -664,7 +664,7 @@ sub cancel {
 
 =pod
 
-=item C<< I<$queue>->abort; >>
+=item I<$queue>->abort;
 
 Cancels execution of all tasks in the queue after the current step of the
 current task completes.
@@ -683,7 +683,7 @@ sub abort {
 
 =pod
 
-=item C<< I<$boolean> = I<$queue>->is_empty; >>
+=item I<$boolean> = I<$queue>->is_empty;
 
 Returns true if there is nothing currently in the queue.  Note that this method
 will also return true if called from the last task that was in the queue.
@@ -700,7 +700,7 @@ sub is_empty {
 
 =pod
 
-=item C<< I<$queue>->notify(I<$instance>); >>
+=item I<$queue>->notify(I<$instance>);
 
 Notifies the queue that the task instance specified by I<$instance> has
 completed.  This is called automatically by I<$instance> when it finishes; you
@@ -858,6 +858,20 @@ L<Tk::after>
 
 L<Tie::StrictHash|Tie::StrictHash>
 
+=head1 CHANGES
+
+=over 4
+
+=item 1.0
+
+First release.
+
+=item 1.1
+
+Allow a Task to be created off of any widget, not just a MainWindow.
+
+=back
+
 =head1 COPYRIGHT
 
 Copyright 2002 Kevin Michael Vail.  All rights reserved.
@@ -875,6 +889,9 @@ Kevin Michael Vail <kevin@vaildc.net>
 
 ##==============================================================================
 ## $Log: Task.pm,v $
+## Revision 1.1  2002/10/24 01:12:14  kevin
+## Allow Task to be created from any widget, not just a MainWindow.
+##
 ## Revision 1.0  2002/03/18 02:29:07  kevin
 ## Initial revision
 ##==============================================================================

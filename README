@@ -17,5 +17,9 @@ DESCRIPTION
     A Task is *not* the same as a thread. It is more like a "poor man's"
     version of threading. However, this is often quite good enough.
 
+CHANGES
+    Version 1.1 allows a Task to be created from any widget, not just
+    a MainWindow.
+
 AUTHOR
     Kevin Michael Vail <kevin@vaildc.net>
